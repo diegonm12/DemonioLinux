@@ -1,0 +1,71 @@
+#!/bin/bash
+# trackermon daemon
+# description: trackermon daemon
+# processname: daemonExe
+
+DAEMON_PATH="/home/diego/Documentos" # path of the daemon location
+
+DAEMON=daemonExe # executable program (daemon)
+
+
+NAME=trackermon # constant value 
+PIDFILE=/var/run/$NAME.pid # location of the PID file
+SCRIPTNAME=/etc/init.d/$NAME # location of the script to manage the daemon
+
+case "$1" in
+start)
+	printf "Starting $NAME..."
+	cd $DAEMON_PATH
+	./$DAEMON
+	
+        echo `pidof daemonExe > $PIDFILE`
+        printf "%s\n" "done"
+
+;;
+status)
+        printf "Checking $NAME..."
+        if [ -f $PIDFILE ]; then
+            PID=`cat $PIDFILE`
+            if [ -z "`ps axf | grep ${PID} | grep -v grep`" ]; then
+                printf "%s\n" "Process dead but pidfile exists"
+            else
+                echo "daemon: $NAME is running (PID: $PID)"
+            fi
+        else
+            printf "%s\n" "daemon: $NAME not running"
+        fi
+;;
+stop)
+        printf  "Stopping $NAME..."
+        if [ -f $PIDFILE ]; then
+	    PID=`cat $PIDFILE`
+            cd $DAEMON_PATH
+            kill $PID
+            printf "%s\n" "done"
+            rm -f $PIDFILE
+        else
+            printf "%s\n" "$NAME not running :("
+        fi
+;;
+
+restart)
+	printf "%s\n" "Restarting $NAME..."
+	
+        if [ -f $PIDFILE ]; then
+		PID=`cat $PIDFILE`
+            	cd $DAEMON_PATH
+		$0 stop
+  		$0 start
+		printf "%s\n" "Restarting $NAME done"
+	else
+            printf "%s\n" "$NAME not running :("
+        fi
+	
+;;
+
+*)
+        echo "Usage: $0 {status|start|stop|restart}"
+        exit 1
+esac
+
+exit 0

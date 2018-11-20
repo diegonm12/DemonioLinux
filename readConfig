@@ -1,0 +1,10 @@
+#!/bin/sh
+
+
+
+awk -F"LOGFILE="  'NR==1{print $NF}' /etc/trackermon/config.conf > /tmp/tempLogDir
+awk -F"CPUthreshold="  'NR==2{print $NF}' /etc/trackermon/config.conf > /tmp/tempCPU
+awk -F"Memthreshold="  'NR==3{print $NF}' /etc/trackermon/config.conf > /tmp/tempMEM
+awk -F"/boot/efi="  'NR==4{print $NF}' /etc/trackermon/config.conf > /tmp/tempLogFS1
+awk -F"/="  'NR==5{print $NF}' /etc/trackermon/config.conf > /tmp/tempFS2
+

@@ -1,0 +1,2 @@
+#!/bin/bash
+df | awk '{print$5}' ORS=',' > /tmp/temporal3
